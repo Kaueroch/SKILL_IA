@@ -9,6 +9,7 @@ Skill autoral para Cursor, Claude Code, Codex, Copilot CLI, Gemini CLI e OpenCod
 | Skill | Formato | O que faz | Uso |
 |---|---|---|---|
 | `saas-ui` | pasta `SKILL.md` | Você monta SaaS UI com React + TS + Tailwind v4 + shadcn/new-york. A skill exige plano de 10 linhas e code review antes da resposta | landing, dashboard, settings, auth, pricing, onboarding, tabela, dialog, sidebar |
+| `doc-ai` | pasta `SKILL.md` | Você documenta um projeto a partir do código: visão geral, módulos, diagramas e dívidas técnicas, com melhorias só como sugestão | documentar projeto, gerar docs, README, arquitetura, features futuras |
 
 ## Estrutura
 
@@ -16,7 +17,10 @@ Skill autoral para Cursor, Claude Code, Codex, Copilot CLI, Gemini CLI e OpenCod
 SKILL_IA/
 ├── LICENSE
 ├── README.md
-└── saas-ui/
+├── saas-ui/
+│   ├── SKILL.md
+│   └── README.md
+└── doc-ai/
     ├── SKILL.md
     └── README.md
 ```
