@@ -346,7 +346,7 @@
 
   <section class="video" aria-labelledby="videoTitle">
     <h2 id="videoTitle">Prefer not to clone the repo?</h2>
-    <p>Press play and watch the manual path on loop: open the skills folder, create the skill file, paste the content from GitHub.</p>
+    <p>Press play to watch the manual path: open the skills folder, create the file, paste the content you copied.</p>
     <div class="mini-nav" id="termNav" role="tablist" aria-label="Choose a tool for the walkthrough"></div>
     <div class="video-frame live">
       <div class="term-bar">
@@ -358,12 +358,11 @@
         </span>
       </div>
       <div class="term-screen" id="termScreen" aria-hidden="true"></div>
-      <p class="sr-only">Terminal walkthrough transcript: change to the tool's skills folder, create the saas-ui folder and SKILL.md file, paste the file content copied from GitHub, then list the folder to confirm SKILL.md exists.</p>
+      <p class="sr-only">Terminal walkthrough transcript: change to the tool's skills folder, create the saas-ui folder and SKILL.md file, paste the file content you copied, then list the folder to confirm SKILL.md exists.</p>
     </div>
   </section>
 
   <footer class="foot">
-    <span class="live" id="deployNote">● served from docs/ via GitHub Pages</span>
     <span>MIT licensed. Commands install the folder as-is; nothing runs until you ask the tool to use the skill.</span>
   </footer>
 </div>
@@ -618,9 +617,9 @@
       { t: "cmd", s: "cd " + base },
       { t: "cmd", s: "mkdir -p saas-ui && cd saas-ui" },
       { t: "cmd", s: "touch SKILL.md" },
-      { t: "note", s: "# now paste the SKILL.md content copied from GitHub" },
+      { t: "note", s: "# now paste the SKILL.md content you copied" },
       { t: "paste", s: "---\nname: saas-ui\ndescription: Build modern, non-generic SaaS UI\n---\n# SaaS UI" },
-      { t: "out", s: "# pasted 38 lines from github.com/Kaueroch/SKILL_IA" },
+      { t: "out", s: "# pasted 38 lines" },
       { t: "cmd", s: "ls" },
       { t: "out", s: "SKILL.md" },
       { t: "done", s: "Skill ready. Do not forget to reset your AI terminal." }
