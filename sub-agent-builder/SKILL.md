@@ -1,6 +1,6 @@
 ---
 name: sub-agent-builder
-description: Create reusable code subagents from a short purpose description — interview, propose routines, and write a single <agent-name>.md file. Use this whenever the user asks to create an agent, code agent, subagent, reviewer, helper, assistant, bot, criar agente, novo agente, or describes a repeatable coding role, even if they don't say the word agent explicitly.
+description: Create reusable code subagents from a short purpose description — interview, propose routines, and write a single <agent-name>.md file. Use this whenever the user asks to create an agent, code agent, subagent, reviewer, helper, assistant, bot, debug helper, commit helper, migration helper, or describes a repeatable coding role, even if they don't say the word agent explicitly.
 license: MIT
 ---
 

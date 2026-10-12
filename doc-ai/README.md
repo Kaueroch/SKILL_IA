@@ -1,29 +1,65 @@
 # doc-ai
 
-Skill autoral para ler um projeto e documentar com base no código: propósito,
-módulos, arquitetura, diagramas e dívidas técnicas, com melhorias como sugestão.
+You point at a codebase and you receive technical docs grounded in files you actually read. No invented endpoints. No invented behavior.
 
-## Quando usar
+## Use cases
 
-Use quando pedir para documentar projeto ou código, gerar docs ou README,
-mapear arquitetura, explicar o que um repo faz, ou registrar features futuras.
+You join an unfamiliar repo and need a map fast.
+Prompt: `Document this repo at overview level in docs/overview.md. Include stack, entry points, and run commands.`
 
-## Regras
+You prepare handoff with per-module detail.
+Prompt: `Write per-module docs for auth and billing. Include purpose, key flows, key files with path:line refs.`
 
-- Toda afirmação nasce de arquivo lido; sem placeholders.
-- A skill sempre pergunta destino (`docs/`, README ou ambos) e profundidade
-  (visão geral, por módulo ou completa) antes de escrever.
-- Melhorias vão no documento e nunca entram no código sem confirmação.
+You review architecture before a refactor.
+Prompt: `Map request flow plus data model with mermaid diagrams. Mark unknowns as open questions.`
 
-## Estrutura
+You onboard a new hire.
+Prompt: `Write complete docs with overview, per-module pages, diagrams, and tech debt with risks.`
+
+## How you work
+
+You confirm destination, depth, language, and whether you want suggestions. Destinations include new `docs/` folder, README rewrite, or both. Depths include `overview`, `per-module`, `complete`.
+
+You answer one batch of questions. You receive one file per unit: `docs/overview.md`, `docs/<module>.md`, plus `docs/README.md` as index. Each file states purpose first, then behavior, then locations with `path:line` refs. Diagrams use mermaid and cover code you verified.
+
+You receive improvements in a separate section with location, observed problem, impact, and risk. You approve before any code change happens. Docs never trigger a refactor by surprise.
+
+## Depths
+
+- `overview`: purpose, stack, architecture, run commands
+- `per-module`: overview plus one doc per module with routes and key files
+- `complete`: all above plus diagrams, data model, mapped tech debt
+
+## When not to use
+
+You ask a one-off question about a snippet. You ask directly, no skill needed.
+You follow a spec-driven flow with an `/sdd-08-docs` step. You link the specs.
+You need repo rules for agents. You use `agents-md`.
+You need UI code. You use `saas-ui`.
+
+## Rules
+
+- You trace every claim to a file you read.
+- You write no placeholders, no `TODO: fill in`. You mark gaps as open questions.
+- You keep SKILL.md under 500 lines with no bundled resources until a repeated pattern earns one.
+
+## Structure
 
 ```text
 doc-ai/
-├── SKILL.md   # instrução da skill (inglês)
-├── README.md  # este arquivo
-└── LICENSE    # MIT (raiz do repo)
+├── SKILL.md   # skill instruction
+├── README.md  # this file
+└── LICENSE    # MIT (repo root)
 ```
 
-## Licença
+## Install
 
-MIT — ver `LICENSE` na raiz do repo.
+Copy the folder to your tool, then prompt with the use cases above. Full paths live in the repo root README.
+
+```bash
+cp -r SKILL_IA/doc-ai ~/.claude/skills/doc-ai
+```
+
+## License
+
+MIT. See `LICENSE` at the repo root.
