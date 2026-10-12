@@ -381,6 +381,16 @@
       name: "doc-ai",
       desc: "Read a codebase and write technical documentation grounded in the actual code: project overview, per-module docs, architecture and data flow, diagrams, and tech debt with improvement suggestions.",
       uses: ["project overview", "per-module docs", "architecture maps", "README", "onboarding", "tech debt"]
+    },
+    "sub-agent-builder": {
+      name: "sub-agent-builder",
+      desc: "Turn a short purpose into a reusable code subagent: interview, propose commit/before/after routines, and write a single <name>.md file with mode subagent.",
+      uses: ["create agent", "new subagent", "code reviewer", "debug helper", "commit routines", "reusable role"]
+    },
+    "agents-md": {
+      name: "agents-md",
+      desc: "Write or update a repo-level AGENTS.md with setup commands, code style, guardrails, and commit routines — all commands verified from the repo.",
+      uses: ["AGENTS.md", "repo instructions", "agent onboarding", "commit rules", "bootstrap", "standardize workflow"]
     }
   };
 
