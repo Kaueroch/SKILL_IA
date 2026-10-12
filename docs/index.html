@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKILL_IA — Install a skill where you work</title>
+<meta name="description" content="Pick a skill, pick your AI tool, copy the install command. SKILL_IA installs as a folder with SKILL.md.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #171717;
+    --panel: #1e1e1e;
+    --panel-2: #262626;
+    --line: #333333;
+    --ink: #ededed;
+    --muted: #a3a3a3;
+    --faint: #8f8f8f;
+    --paper: #f5f5f3;
+    --paper-ink: #171717;
+    --sage: #8fae8b;
+    --radius-panel: 14px;
+    --radius-control: 10px;
+    --font-display: "Zilla Slab", Georgia, serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-code: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  /* faint archive grid, neutral white, kept very quiet */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 100%);
+  }
+  a { color: var(--paper); }
+  :focus { outline: none; }
+  :focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; position: relative; }
+
+  /* top bar */
+  .topbar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .mark {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 15px; letter-spacing: .01em;
+    color: var(--ink); text-decoration: none;
+    margin-right: auto;
+  }
+  .mark-cube {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--paper); color: var(--paper-ink);
+    display: grid; place-items: center;
+    font-family: var(--font-code); font-size: 13px; font-weight: 500;
+  }
+  .topbar-link {
+    color: var(--muted); text-decoration: none; font-size: 14px;
+    border: 1px solid var(--line); border-radius: var(--radius-control);
+    padding: 7px 12px;
+  }
+  .topbar-link:hover { color: var(--ink); border-color: var(--faint); }
+
+  /* skill picker */
+  .skills {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 20px 0 4px;
+  }
+  .skill-tab {
+    font: inherit; font-size: 14px; font-weight: 500;
+    color: var(--muted); background: transparent;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 16px; cursor: pointer;
+  }
+  .skill-tab:hover { color: var(--ink); }
+  .skill-tab[aria-selected="true"] {
+    background: var(--paper); border-color: var(--paper); color: var(--paper-ink);
+  }
+
+  /* hero: the subject itself, left aligned */
+  .hero { padding: 26px 0 8px; max-width: 68ch; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: clamp(2rem, 4.6vw, 3.1rem);
+    line-height: 1.05; letter-spacing: 0;
+    margin: 0 0 12px;
+  }
+  .hero p { color: var(--muted); margin: 0; font-size: 17px; max-width: 60ch; }
+  .hero p code {
+    font-family: var(--font-code); font-size: .86em;
+    color: var(--ink); background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px;
+  }
+
+  /* docs grid */
+  .layout {
+    display: grid; grid-template-columns: 264px 1fr; gap: 20px;
+    padding: 22px 0 40px; align-items: start;
+  }
+  .side {
+    background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius-panel);
+    padding: 10px;
+  }
+  .side-caption { font-size: 13px; color: var(--faint); padding: 6px 10px 8px; }
+  .plat {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    font: inherit; text-align: left; cursor: pointer;
+    background: transparent; color: var(--muted);
+    border: 1px solid transparent; border-radius: var(--radius-control);
+    padding: 10px 12px;
+  }
+  .plat:hover { color: var(--ink); background: var(--panel-2); }
+  .plat[aria-current="true"] {
+    color: var(--ink); background: var(--panel-2);
+    border-color: var(--line);
+  }
+  .plat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex: none; }
+  .plat[aria-current="true"] .plat-dot { background: var(--paper); }
+  .plat-name { font-size: 14.5px; font-weight: 500; display: block; }
+  .plat-path { font-family: var(--font-code); font-size: 11.5px; color: var(--faint); display: block; }
+
+  .main {
+    background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius-panel);
+    padding: 26px 26px 24px;
+    min-width: 0;
+  }
+  .skill-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .skill-head h2 {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.7rem; line-height: 1.15; margin: 0;
+  }
+  .format {
+    font-family: var(--font-code); font-size: 12px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;
+  }
+  .skill-desc { color: var(--muted); margin: 10px 0 0; max-width: 62ch; }
+  .use-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 0; padding: 0; list-style: none; }
+  .use-row li {
+    font-size: 13px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px;
+  }
+
+  /* the one memorable element: the copy slab */
+  .slab {
+    margin-top: 20px;
+    background: #101010;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--paper);
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+  }
+  .slab-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .slab-title { font-size: 14px; font-weight: 600; }
+  .slab-sub { font-size: 13px; color: var(--faint); }
+  .copy-btn {
+    margin-left: auto; flex: none;
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    background: var(--paper); color: var(--paper-ink);
+    border: 1px solid var(--paper); border-radius: var(--radius-control);
+    padding: 9px 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .copy-btn:hover { background: #d9d9d9; }
+  .copy-btn[data-done="true"] { background: var(--sage); border-color: var(--sage); }
+  .slab pre {
+    margin: 0; padding: 20px 18px;
+    overflow-x: auto;
+    font-family: var(--font-code); font-size: 14.5px; line-height: 1.75;
+    color: var(--ink);
+  }
+  .slab pre .c { color: var(--faint); }
+  .slab pre .p { color: var(--paper); }
+
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .check {
+    border: 1px solid var(--line); border-radius: var(--radius-control);
+    padding: 14px 16px; background: var(--panel-2);
+  }
+  .check h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 6px; color: var(--ink); }
+  .check p { font-size: 14px; color: var(--muted); margin: 0; }
+  .check p code {
+    font-family: var(--font-code); font-size: .86em; color: var(--ink);
+  }
+
+  .video {
+    border: 1px solid var(--line); border-radius: var(--radius-panel);
+    background: var(--panel);
+    padding: 26px;
+    margin: 0 0 28px;
+  }
+  .video h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.4rem; line-height: 1.2; margin: 0 0 8px;
+  }
+  .video p { color: var(--muted); margin: 0 0 18px; max-width: 62ch; }
+  .video-frame {
+    position: relative; aspect-ratio: 16 / 9;
+    border: 1px solid var(--line); border-radius: var(--radius-control);
+    background: #101010;
+    display: grid; place-items: center; overflow: hidden;
+  }
+  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-frame.live { aspect-ratio: auto; display: block; }
+  .term-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+  }
+  .term-dots { display: flex; gap: 6px; }
+  .term-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .term-title { font-size: 13px; color: var(--faint); margin-right: auto; }
+  .term-controls { display: flex; gap: 8px; }
+  .term-controls button {
+    font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+    color: var(--muted); background: transparent;
+    border: 1px solid var(--line); border-radius: 8px; padding: 5px 12px;
+  }
+  .term-controls button:hover { color: var(--paper); border-color: var(--faint); }
+  .term-screen {
+    font-family: var(--font-code); font-size: 13.5px; line-height: 1.8;
+    padding: 18px; min-height: 348px;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .term-screen .tp { color: var(--paper); }
+  .term-screen .to { color: var(--muted); }
+  .term-screen .td { color: var(--sage); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .mini-nav { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; }
+  .mini-tab {
+    font: inherit; font-size: 12.5px; font-weight: 500;
+    color: var(--muted); background: transparent;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 12px; cursor: pointer;
+  }
+  .mini-tab:hover { color: var(--ink); }
+  .mini-tab[aria-selected="true"] { background: var(--paper); border-color: var(--paper); color: var(--paper-ink); }
+
+  .foot {
+    border-top: 1px solid var(--line);
+    padding: 20px 0 44px;
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+    color: var(--faint); font-size: 13.5px;
+  }
+  .foot a { color: var(--muted); }
+  .foot .live { color: var(--sage); font-family: var(--font-code); font-size: 12.5px; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { display: flex; gap: 6px; overflow-x: auto; padding: 8px; }
+    .side-caption { display: none; }
+    .plat { flex: 1 0 auto; width: auto; white-space: nowrap; }
+    .plat-path { display: none; }
+    .checks { grid-template-columns: 1fr; }
+    .main { padding: 20px 18px; }
+    .video { padding: 20px 18px; }
+    .term-screen { min-height: 0; font-size: 12.5px; padding: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar">
+    <a class="mark" href="https://github.com/Kaueroch/SKILL_IA" aria-label="SKILL_IA repository">
+      <span class="mark-cube" aria-hidden="true">S/</span>
+      <span>SKILL_IA</span>
+    </a>
+    <a class="topbar-link" href="https://github.com/Kaueroch/SKILL_IA">View repository</a>
+  </header>
+
+  <nav class="skills" role="tablist" aria-label="Choose a skill" id="skillTabs"></nav>
+
+  <section class="hero">
+    <h1>Install a skill where you already work.</h1>
+    <p>Every skill is a folder with <code>SKILL.md</code>. Pick a skill, pick your tool, run the command from the repo root. No package manager, no build step.</p>
+  </section>
+
+  <div class="layout">
+    <nav class="side" aria-label="Choose a platform" id="platNav">
+      <div class="side-caption" id="platCount"></div>
+    </nav>
+
+    <main class="main" aria-live="polite">
+      <div class="skill-head">
+        <h2 id="skillName"></h2>
+        <span class="format">folder with SKILL.md</span>
+      </div>
+      <p class="skill-desc" id="skillDesc"></p>
+      <ul class="use-row" id="skillUses" aria-label="Use it for"></ul>
+
+      <div class="slab">
+        <div class="slab-bar">
+          <div>
+            <div class="slab-title" id="slabTitle"></div>
+            <div class="slab-sub">Run from the repo root</div>
+          </div>
+          <button class="copy-btn" id="copyBtn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyLabel">Copy command</span>
+          </button>
+        </div>
+        <pre><code id="cmdBlock"></code></pre>
+      </div>
+
+      <div class="checks">
+        <div class="check">
+          <h3>Check it worked</h3>
+          <p id="checkText"></p>
+        </div>
+        <div class="check">
+          <h3>Good to know</h3>
+          <p id="tipText"></p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <section class="video" aria-labelledby="videoTitle">
+    <h2 id="videoTitle">Prefer not to clone the repo?</h2>
+    <p>Press play and watch the manual path on loop: open the skills folder, create the skill file, paste the content from GitHub.</p>
+    <div class="mini-nav" id="termNav" role="tablist" aria-label="Choose a tool for the walkthrough"></div>
+    <div class="video-frame live">
+      <div class="term-bar">
+        <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="term-title">terminal — manual install</span>
+        <span class="term-controls">
+          <button id="termPlay" type="button" aria-pressed="true">Pause</button>
+          <button id="termRestart" type="button">Restart</button>
+        </span>
+      </div>
+      <div class="term-screen" id="termScreen" aria-hidden="true"></div>
+      <p class="sr-only">Terminal walkthrough transcript: change to the tool's skills folder, create the saas-ui folder and SKILL.md file, paste the file content copied from GitHub, then list the folder to confirm SKILL.md exists.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span class="live" id="deployNote">● served from docs/ via GitHub Pages</span>
+    <span>MIT licensed. Commands install the folder as-is; nothing runs until you ask the tool to use the skill.</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SKILLS = {
+    "saas-ui": {
+      name: "saas-ui",
+      desc: "Build modern, non-generic SaaS UI with React, TypeScript, Tailwind v4 and shadcn new-york. Quiet surfaces, one memorable moment per view, real copy, precise spacing.",
+      uses: ["landing pages", "dashboards", "settings", "auth", "pricing", "onboarding", "tables", "dialogs"]
+    },
+    "doc-ai": {
+      name: "doc-ai",
+      desc: "Read a codebase and write technical documentation grounded in the actual code: project overview, per-module docs, architecture and data flow, diagrams, and tech debt with improvement suggestions.",
+      uses: ["project overview", "per-module docs", "architecture maps", "README", "onboarding", "tech debt"]
+    }
+  };
+
+  var PLATFORMS = [
+    {
+      id: "claude", label: "Claude Code", path: "~/.claude/skills/",
+      install: function (s) { return "cp -r SKILL_IA/" + s + " ~/.claude/skills/" + s; },
+      check: "Open the chat and run /skills. The skill shows up in the list.",
+      tip: "Trigger it with the words from its Usage line, written like the skill description."
+    },
+    {
+      id: "cursor", label: "Cursor", path: ".cursor/skills/",
+      install: function (s) { return "mkdir -p .cursor/skills\ncp -r SKILL_IA/" + s + " .cursor/skills/" + s; },
+      check: "Open Cursor chat in the project and ask using the skill intent.",
+      tip: "The folder lives inside the project, so it travels with the repo."
+    },
+    {
+      id: "codex", label: "OpenAI Codex", path: "~/.codex/skills/",
+      install: function (s) { return "mkdir -p ~/.codex/skills\ncp -r SKILL_IA/" + s + " ~/.codex/skills/" + s; },
+      check: "Run Codex in the project and prompt with the description words.",
+      tip: "One install covers every project on the machine."
+    },
+    {
+      id: "copilot", label: "GitHub Copilot CLI", path: "~/.copilot/skills/",
+      install: function (s) { return "mkdir -p ~/.copilot/skills\ncp -r SKILL_IA/" + s + " ~/.copilot/skills/" + s; },
+      check: "Run copilot and describe the task with the Usage words from the table.",
+      tip: "Uses the same folder shape as the other CLIs, so updating is just copying again."
+    },
+    {
+      id: "gemini", label: "Gemini CLI", path: "~/.gemini/skills/",
+      install: function (s) { return "mkdir -p ~/.gemini/skills\ncp -r SKILL_IA/" + s + " ~/.gemini/skills/" + s; },
+      check: "Open gemini in the project and ask with the description words.",
+      tip: "To update later, delete the old folder first, then copy again."
+    },
+    {
+      id: "opencode", label: "OpenCode", path: "~/.config/opencode/skills/",
+      install: function (s) { return "mkdir -p ~/.config/opencode/skills\ncp -r SKILL_IA/" + s + " ~/.config/opencode/skills/" + s; },
+      check: "Mention the skill name in the prompt. Phrases like “make this prettier” also trigger saas-ui.",
+      tip: "Run it from next to the cloned repo. If you are inside the repo, drop the SKILL_IA/ prefix from the source."
+    }
+  ];
+
+  var state = { skill: "saas-ui", platform: "claude" };
+
+  function fromHash() {
+    var h = window.location.hash.replace(/^#/, "");
+    var parts = h.split("&");
+    var next = { skill: state.skill, platform: state.platform };
+    parts.forEach(function (p) {
+      var kv = p.split("=");
+      if (kv[0] === "skill" && SKILLS[kv[1]]) next.skill = kv[1];
+      if (kv[0] === "tool" && PLATFORMS.some(function (x) { return x.id === kv[1]; })) next.platform = kv[1];
+    });
+    state = next;
+  }
+
+  function toHash() {
+    window.location.hash = "skill=" + state.skill + "&tool=" + state.platform;
+  }
+
+  var skillTabs = document.getElementById("skillTabs");
+  var platNav = document.getElementById("platNav");
+  var platCount = document.getElementById("platCount");
+
+  function renderTabs() {
+    skillTabs.innerHTML = "";
+    Object.keys(SKILLS).forEach(function (id) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "skill-tab";
+      b.setAttribute("role", "tab");
+      b.textContent = SKILLS[id].name;
+      b.setAttribute("aria-selected", id === state.skill ? "true" : "false");
+      b.addEventListener("click", function () {
+        state.skill = id;
+        toHash();
+        renderAll(false);
+      });
+      skillTabs.appendChild(b);
+    });
+  }
+
+  function renderNav() {
+    platNav.querySelectorAll(".plat").forEach(function (n) { n.remove(); });
+    platCount.textContent = PLATFORMS.length + " tools install the same folder";
+    PLATFORMS.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "plat";
+      b.setAttribute("aria-current", p.id === state.platform ? "true" : "false");
+      var dot = document.createElement("span");
+      dot.className = "plat-dot";
+      dot.setAttribute("aria-hidden", "true");
+      var txt = document.createElement("span");
+      var nm = document.createElement("span");
+      nm.className = "plat-name";
+      nm.textContent = p.label;
+      var ph = document.createElement("span");
+      ph.className = "plat-path";
+      ph.textContent = p.path;
+      txt.appendChild(nm);
+      txt.appendChild(ph);
+      b.appendChild(dot);
+      b.appendChild(txt);
+      b.addEventListener("click", function () {
+        state.platform = p.id;
+        toHash();
+        renderAll(false);
+      });
+      platNav.appendChild(b);
+    });
+  }
+
+  function highlight(cmd) {
+    var frag = document.createDocumentFragment();
+    cmd.split("\n").forEach(function (line, i) {
+      if (i > 0) frag.appendChild(document.createTextNode("\n"));
+      if (line.charAt(0) === "#") {
+        var c = document.createElement("span");
+        c.className = "c";
+        c.textContent = line;
+        frag.appendChild(c);
+        return;
+      }
+      var m = line.match(/^(mkdir -p |cp -r )(\S+)(.*)$/);
+      if (m) {
+        var a = document.createElement("span");
+        a.className = "p";
+        a.textContent = m[1];
+        var rest = document.createTextNode(m[2] + m[3]);
+        frag.appendChild(a);
+        frag.appendChild(rest);
+      } else {
+        frag.appendChild(document.createTextNode(line));
+      }
+    });
+    return frag;
+  }
+
+  function current() {
+    var plat = PLATFORMS.filter(function (p) { return p.id === state.platform; })[0] || PLATFORMS[0];
+    return { skill: SKILLS[state.skill], plat: plat, cmd: plat.install(state.skill) };
+  }
+
+  function renderAll(fromLoad) {
+    renderTabs();
+    renderNav();
+    var c = current();
+    document.getElementById("skillName").textContent = c.skill.name;
+    document.getElementById("skillDesc").textContent = c.skill.desc;
+    var ul = document.getElementById("skillUses");
+    ul.innerHTML = "";
+    c.skill.uses.forEach(function (u) {
+      var li = document.createElement("li");
+      li.textContent = u;
+      ul.appendChild(li);
+    });
+    document.getElementById("slabTitle").textContent = c.skill.name + " on " + c.plat.label;
+    var block = document.getElementById("cmdBlock");
+    block.innerHTML = "";
+    block.appendChild(highlight(c.cmd));
+    document.getElementById("checkText").textContent = c.plat.check;
+    document.getElementById("tipText").textContent = c.plat.tip;
+    resetCopy();
+    if (!fromLoad) {
+      var titles = document.querySelectorAll(".plat");
+      void titles;
+    }
+  }
+
+  var copyBtn = document.getElementById("copyBtn");
+  var copyLabel = document.getElementById("copyLabel");
+  var copyTimer = null;
+
+  function resetCopy() {
+    copyBtn.setAttribute("data-done", "false");
+    copyLabel.textContent = "Copy command";
+    if (copyTimer) { window.clearTimeout(copyTimer); copyTimer = null; }
+  }
+
+  function markCopied() {
+    copyBtn.setAttribute("data-done", "true");
+    copyLabel.textContent = "Copied";
+    copyTimer = window.setTimeout(resetCopy, 2200);
+  }
+
+  copyBtn.addEventListener("click", function () {
+    var cmd = current().cmd;
+    function done() { markCopied(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd).then(done, function () { fallback(); });
+    } else {
+      fallback();
+    }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = cmd;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) { /* keep quiet, user can select manually */ }
+      document.body.removeChild(ta);
+      done();
+    }
+  });
+
+  window.addEventListener("hashchange", function () {
+    fromHash();
+    renderAll(true);
+  });
+
+  fromHash();
+  renderAll(true);
+
+  /* looping terminal walkthrough: manual install, pausable */
+  var termScreen = document.getElementById("termScreen");
+  var termPlay = document.getElementById("termPlay");
+  var termRestart = document.getElementById("termRestart");
+  var termReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var TERM_BASES = {
+    claude: "~/.claude/skills",
+    cursor: "~/my-project/.cursor/skills",
+    codex: "~/.codex/skills",
+    copilot: "~/.copilot/skills",
+    gemini: "~/.gemini/skills",
+    opencode: "~/.config/opencode/skills"
+  };
+
+  function buildScript(base) {
+    return [
+      { t: "cmd", s: "cd " + base },
+      { t: "cmd", s: "mkdir -p saas-ui && cd saas-ui" },
+      { t: "cmd", s: "touch SKILL.md" },
+      { t: "note", s: "# now paste the SKILL.md content copied from GitHub" },
+      { t: "paste", s: "---\nname: saas-ui\ndescription: Build modern, non-generic SaaS UI\n---\n# SaaS UI" },
+      { t: "out", s: "# pasted 38 lines from github.com/Kaueroch/SKILL_IA" },
+      { t: "cmd", s: "ls" },
+      { t: "out", s: "SKILL.md" },
+      { t: "done", s: "Skill ready. Do not forget to reset your AI terminal." }
+    ];
+  }
+
+  var termTool = state.platform;
+  var SCRIPT = buildScript(TERM_BASES[termTool]);
+
+  var T = { step: 0, char: 0, line: null, span: null, timer: null, playing: !termReduced };
+
+  function termLine(cls) {
+    var d = document.createElement("div");
+    if (cls) d.className = cls;
+    termScreen.appendChild(d);
+    return d;
+  }
+
+  function termStaticLine(a) {
+    if (a.t === "cmd") {
+      var d = termLine();
+      var p = document.createElement("span");
+      p.className = "tp";
+      p.textContent = "$ ";
+      d.appendChild(p);
+      d.appendChild(document.createTextNode(a.s));
+    } else if (a.t === "paste") {
+      a.s.split("\n").forEach(function (row) {
+        termLine().textContent = row;
+      });
+    } else {
+      termLine(a.t === "done" ? "td" : "to").textContent = a.s;
+    }
+  }
+
+  function termLater(fn, ms) {
+    if (T.timer) window.clearTimeout(T.timer);
+    T.timer = window.setTimeout(fn, ms);
+  }
+
+  function termAdvance() {
+    if (!T.playing) return;
+    if (T.step >= SCRIPT.length) {
+      termLater(termReset, 3400);
+      return;
+    }
+    var a = SCRIPT[T.step];
+    if (a.t === "cmd") {
+      if (!T.line) {
+        T.line = termLine();
+        var p = document.createElement("span");
+        p.className = "tp";
+        p.textContent = "$ ";
+        T.line.appendChild(p);
+        T.span = document.createElement("span");
+        T.line.appendChild(T.span);
+        T.char = 0;
+      }
+      if (T.char < a.s.length) {
+        T.span.textContent += a.s.charAt(T.char);
+        T.char += 1;
+        termLater(termAdvance, 34);
+      } else {
+        T.line = null;
+        T.step += 1;
+        termLater(termAdvance, 500);
+      }
+    } else if (a.t === "paste") {
+      var rows = a.s.split("\n");
+      if (T.char < rows.length) {
+        termLine().textContent = rows[T.char];
+        T.char += 1;
+        termLater(termAdvance, 70);
+      } else {
+        T.char = 0;
+        T.step += 1;
+        termLater(termAdvance, 500);
+      }
+    } else {
+      termLine(a.t === "done" ? "td" : "to").textContent = a.s;
+      T.char = 0;
+      T.step += 1;
+      termLater(termAdvance, 350);
+    }
+  }
+
+  function termReset() {
+    if (T.timer) window.clearTimeout(T.timer);
+    T.timer = null;
+    termScreen.innerHTML = "";
+    T.step = 0;
+    T.char = 0;
+    T.line = null;
+    if (T.playing) termAdvance();
+  }
+
+  function termSetPlay(v) {
+    T.playing = v;
+    termPlay.textContent = v ? "Pause" : "Play";
+    termPlay.setAttribute("aria-pressed", v ? "true" : "false");
+    if (v) termAdvance();
+    else if (T.timer) window.clearTimeout(T.timer);
+  }
+
+  termPlay.addEventListener("click", function () { termSetPlay(!T.playing); });
+  termRestart.addEventListener("click", function () { termReset(); termSetPlay(true); });
+
+  var termNav = document.getElementById("termNav");
+  var termShort = { claude: "Claude", cursor: "Cursor", codex: "Codex", copilot: "Copilot", gemini: "Gemini", opencode: "OpenCode" };
+  function renderTermNav() {
+    termNav.innerHTML = "";
+    PLATFORMS.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "mini-tab";
+      b.setAttribute("role", "tab");
+      b.textContent = termShort[p.id];
+      b.setAttribute("aria-selected", p.id === termTool ? "true" : "false");
+      b.addEventListener("click", function () {
+        termTool = p.id;
+        SCRIPT = buildScript(TERM_BASES[termTool]);
+        renderTermNav();
+        termReset();
+        termSetPlay(true);
+      });
+      termNav.appendChild(b);
+    });
+  }
+  renderTermNav();
+
+  if (termReduced) {
+    SCRIPT.forEach(termStaticLine);
+    termPlay.textContent = "Play";
+    termPlay.setAttribute("aria-pressed", "false");
+  } else {
+    termAdvance();
+  }
+})();
+</script>
+</body>
+</html>
