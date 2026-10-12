@@ -157,11 +157,6 @@
     border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;
   }
   .skill-desc { color: var(--muted); margin: 10px 0 0; max-width: 62ch; }
-  .use-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 0; padding: 0; list-style: none; }
-  .use-row li {
-    font-size: 13px; color: var(--muted);
-    border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px;
-  }
 
   /* the one memorable element: the copy slab */
   .slab {
@@ -260,6 +255,22 @@
   }
   .mini-tab:hover { color: var(--ink); }
   .mini-tab[aria-selected="true"] { background: var(--paper); border-color: var(--paper); color: var(--paper-ink); }
+  .seg {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-top: 16px;
+  }
+  .seg-btn {
+    font: inherit; cursor: pointer; text-align: left;
+    background: var(--panel-2); color: var(--muted);
+    border: 1px solid var(--line); border-radius: var(--radius-control);
+    padding: 12px 14px; display: block;
+  }
+  .seg-btn:hover { color: var(--ink); border-color: var(--faint); }
+  .seg-btn[aria-selected="true"] {
+    background: var(--paper); border-color: var(--paper); color: var(--paper-ink);
+  }
+  .seg-title { font-size: 14.5px; font-weight: 600; display: block; }
+  .seg-sub { font-size: 12.5px; display: block; margin-top: 2px; opacity: .75; }
 
   .foot {
     border-top: 1px solid var(--line);
@@ -277,6 +288,7 @@
     .plat { flex: 1 0 auto; width: auto; white-space: nowrap; }
     .plat-path { display: none; }
     .checks { grid-template-columns: 1fr; }
+    .seg { grid-template-columns: 1fr; }
     .main { padding: 20px 18px; }
     .video { padding: 20px 18px; }
     .term-screen { min-height: 0; font-size: 12.5px; padding: 14px; }
@@ -315,13 +327,23 @@
         <span class="format">folder with SKILL.md</span>
       </div>
       <p class="skill-desc" id="skillDesc"></p>
-      <ul class="use-row" id="skillUses" aria-label="Use it for"></ul>
+
+      <div class="seg" role="tablist" aria-label="What to copy">
+        <button class="seg-btn" id="tabCmd" role="tab" type="button" aria-selected="true">
+          <span class="seg-title">Install command</span>
+          <span class="seg-sub">Copy, paste in the terminal, done</span>
+        </button>
+        <button class="seg-btn" id="tabText" role="tab" type="button" aria-selected="false">
+          <span class="seg-title">Full SKILL.md text</span>
+          <span class="seg-sub">Copy everything at once — no clone needed</span>
+        </button>
+      </div>
 
       <div class="slab">
         <div class="slab-bar">
           <div>
             <div class="slab-title" id="slabTitle"></div>
-            <div class="slab-sub">Run from the repo root</div>
+            <div class="slab-sub" id="slabSub">Run from the repo root</div>
           </div>
           <button class="copy-btn" id="copyBtn" type="button">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -346,7 +368,7 @@
 
   <section class="video" aria-labelledby="videoTitle">
     <h2 id="videoTitle">Prefer not to clone the repo?</h2>
-    <p>Press play to watch the manual path: open the skills folder, create the file, paste the content you copied.</p>
+    <p>Pick <strong>Full SKILL.md text</strong> above, copy it all at once, then create the file as shown below. Press play to watch the manual path.</p>
     <div class="mini-nav" id="termNav" role="tablist" aria-label="Choose a tool for the walkthrough"></div>
     <div class="video-frame live">
       <div class="term-bar">
@@ -366,6 +388,526 @@
     <span>MIT licensed. Commands install the folder as-is; nothing runs until you ask the tool to use the skill.</span>
   </footer>
 </div>
+
+<script type="text/plain" id="fulltext-saas-ui">
+---
+name: saas-ui
+description: Build modern, non-generic SaaS UI with React + TypeScript + Tailwind v4 + shadcn/new-york. Use this whenever the user asks for a landing page, dashboard, app screen, component, layout, pricing section, or says SaaS design, UI, frontend, modern, clean, beautiful — even if they do not say the word design explicitly.
+license: MIT
+---
+
+# SaaS UI
+
+Build production-quality SaaS interfaces that look designed by a senior product designer, not generated. Default taste is modern SaaS (Linear / Vercel / Stripe caliber): quiet surfaces, one memorable moment per view, real copy, precise spacing.
+
+## When to trigger
+
+Trigger on any of: new page, landing, dashboard, settings screen, auth screen, pricing, onboarding, empty/loading/error state, table, dialog, sidebar, or "make this prettier / modern / like a real SaaS".
+
+If the brief is vague, propose one concrete subject, audience, and primary job in one sentence before building (e.g. "CRM for solo freelancers; audience is non-technical founders; job is convert trial to paid"). Do not build generic placeholder SaaS.
+
+## Stack (do not deviate unless asked)
+
+- React + TypeScript (strict, typed props, no `any` leakage)
+- Tailwind CSS v4 (CSS-based `@theme` config, no `tailwind.config.js`)
+- shadcn new-york style in `components/ui/`, `cn()` from `lib/utils` for classes
+- Icons: `lucide-react` only, no emoji icons
+- Fonts: `next/font` (one body + one display with character, clearly distinct). Never ship with system-default-only stack when a display face is warranted.
+- No extra UI kits, no gradient-mesh libraries, no animation libraries unless the brief needs them.
+
+File placement:
+
+- Pages/sections: `app/<route>/page.tsx` or co-located section components
+- Reusable primitives: `components/ui/<name>.tsx` (shadcn pattern)
+- Feature blocks: `components/<feature>/<Block>.tsx`
+- One component per file, named exports for blocks, default export only for pages.
+
+## Plan before code (2-pass, mandatory)
+
+Pass 1 — 10-line plan, shown briefly:
+1. Subject / audience / job (1 sentence)
+2. Color: 4–6 named hex values + role (bg, surface, ink, muted, accent, danger/success only if needed)
+3. Type: body face + role, display face + role, scale intent
+4. Layout: one-sentence concept + tiny ASCII wireframe; state alignment (left/center) and density
+5. The one memorable element (what is bold, everything else quiet)
+
+Self-check the plan: if it would look the same for any other SaaS brief, revise one axis (color, type, or layout) to be subject-specific and state what changed and why. Only then write code.
+
+## Anti-generic rules (SaaS tells to avoid)
+
+Never ship all of these together — they are the AI-SaaS fingerprint:
+- Purple-blue gradient hero + identical rounded cards with `rgba(0,0,0,.1)` shadows
+- Tracked-out ALL-CAPS eyebrow above every heading
+- Accenting a single word in headline with color/italic
+- `01 / 02 / 03` numbering for non-sequences; middle-dot meta strings (`A · B · C`); `WORD — fragment` labels; `→` on every button
+- Near-black `#0B0B0B` standing in for black without reason; monospace micro-labels everywhere
+- Fade-slide-up on every section on scroll
+
+Instead: pick radius intentionally per hierarchy (not one radius everywhere), use borders over shadows for quiet separation, let type do the work, one orchestrated motion moment max. Motion that answers user action (open/expand/confirm) is welcome; decorative scroll choreography is not.
+
+## Quality floor (always)
+
+- Responsive mobile-first (360px works, no horizontal scroll), keyboard focus visible, `prefers-reduced-motion` respected, contrast AA for body text
+- Dark mode only when requested: implement via CSS vars + `dark:` variant, never force it
+- Real English copy from user perspective, active voice, sentence case. CTA says what happens ("Save changes" → toast "Saved"). Errors explain fix, never apologize vaguely. Empty states invite action.
+- Line length < 80ch for prose; no lorem ipsum; no fake charts with random data labeled as real
+
+## Code standards
+
+```tsx
+// Example 1 — block component shape
+// Input: "pricing section for solo CRM"
+// Output shape:
+export function PricingSection({ tiers }: { tiers: Tier[] }) {
+  return (
+    <section className={cn("mx-auto max-w-6xl px-6 py-16")}>
+      {/* one hierarchy: headline → proof → tiers → footnote */}
+    </section>
+  );
+}
+```
+
+- Typed props with `type Props = {...}`, `cn()` for conditional classes, no inline `<style>` unless CSS vars
+- Accessible primitives: use shadcn `Button`, `Dialog`, `DropdownMenu`, `Input`, `Label`, `Table` where they fit instead of hand-rolled divs
+- Tailwind v4 tokens via `@theme` in CSS (e.g. `--color-ink`, `--font-display`); avoid arbitrary hex scattered in JSX — reference tokens
+
+## Code review (mandatory before final answer)
+
+Before presenting output, run this checklist and fix failures silently unless trade-off needs user call:
+1. Would this be mistaken for another SaaS? If yes, name the one element to change and change it.
+2. One radius / one shadow abused everywhere? Vary or remove.
+3. All headings same size/weight? Establish display → section → body scale.
+4. Buttons/links all with arrows or all-caps? Remove decoration, keep one primary action emphatic.
+5. Mobile 360px + keyboard tab order + reduced-motion sane? Fix if not.
+6. Copy generic ("Welcome to our platform", "Lorem")? Rewrite specific to brief.
+
+Present result as: files created (paths), how to run/view, design choices (3 bullets max), and one known trade-off or next improvement. Keep prose tight; code is the deliverable.
+</script>
+<script type="text/plain" id="fulltext-doc-ai">
+---
+name: doc-ai
+description: Read a codebase and write technical documentation grounded in the actual code — project overview, per-module docs, architecture and data flow, diagrams, and tech debt with improvement suggestions. Use whenever the user asks to document a project, document code, generate docs or a README, map an architecture, explain what a codebase does, or onboard onto an unfamiliar repo, even if they don't say the word "documentation".
+---
+
+# doc-ai — Technical Documentation from Code
+
+Turn a codebase into accurate, useful documentation. Every claim must trace back
+to something you actually read in the code. Never invent endpoints, files, or
+behavior.
+
+## When not to use
+
+- The user only asked a one-off question about a snippet (just answer directly).
+- The project already has a spec-driven flow for the change (e.g. an SDD
+  `/sdd-08-docs` step) — link the specs instead of duplicating them.
+
+## Workflow
+
+### Phase 1 — Discover (read before you claim)
+
+1. Identify the stack from manifests (`package.json`, `pom.xml`, `go.mod`,
+   `requirements.txt`, `docker-compose.yml`, etc.): language, framework,
+   database, auth, how it runs.
+2. Map the structure: entry points, routers/controllers, services, data layer,
+   frontend routes, shared libs. Record real paths.
+3. Trace one end-to-end flow (e.g. login, main CRUD) to confirm you understand
+   how the layers connect.
+4. Note how to run and verify: dev/build/test/lint commands from the repo
+   (README, CI config, `AGENTS.md` if present).
+5. List what you could NOT determine from the code as open questions — never
+   guess to fill a gap.
+
+### Phase 2 — Ask before writing
+
+Always confirm scope with the user before writing files. Ask about:
+
+1. **Destination** — new `docs/` folder, rewrite/extend the README, or both.
+   Be specific: which docs, replacing what.
+2. **Depth** — pick one:
+   - `overview`: purpose, stack, architecture, how to run.
+   - `per-module`: overview plus one doc per module (purpose, key flows,
+     key files, API/routes).
+   - `complete`: everything above plus architecture diagrams (mermaid),
+     data model, and mapped tech debt.
+3. **Language** — default to the user's language unless they say otherwise.
+4. **Improvements** — whether the doc should include a suggested-improvements
+   section (default: yes, suggestions only).
+
+One question batch, then write. Do not start Phase 3 on assumptions.
+
+### Phase 3 — Write
+
+- One file per unit: `docs/overview.md`, `docs/<module>.md`, plus
+  `docs/README.md` as the index. Keep each file focused; link instead of
+  repeating.
+- Every doc states purpose first, then how it works, then where (real paths
+  with `path:line` references for key functions).
+- Diagrams as mermaid code blocks (architecture, request flow, data model).
+  Only diagram what you verified in code.
+- No placeholders, no `TODO: fill in`. If something is unknown, say so
+  explicitly and mark it as an open question.
+- Match the repo's voice: plain verbs, sentence case, no filler. Document what
+  the code does today, not what it should do.
+
+### Phase 4 — Improvements (suggest, never surprise)
+
+- Improvements live in their own section (`## Suggested improvements`), each
+  item with: location, observed problem, why it matters, risk of changing.
+- **Never apply code changes without explicit user confirmation.** Documenting
+  does not imply permission to refactor. If the user confirms, change the
+  smallest scope that fixes the issue and re-verify (Phase 5).
+- Do not bundle unrelated refactors with documentation edits.
+
+### Phase 5 — Verify
+
+- Run the repo's own checks (lint/build/tests) after any file change and
+  record the exact commands and results in your final summary.
+- Fix markdown link targets you created (index ↔ files) before finishing.
+- Final message: what was documented, where, what was left open, and (if any)
+  improvements applied with evidence.
+
+## Rules
+
+- Evidence before synthesis: read the file before citing it.
+- Docs live with the code they describe; update the index when adding files.
+- Keep the skill lean: SKILL.md stays under 500 lines; no bundled resources
+  until a repeated pattern across runs justifies one.
+</script>
+<script type="text/plain" id="fulltext-sub-agent-builder">
+---
+name: sub-agent-builder
+description: Create reusable code subagents from a short purpose description — interview, propose routines, and write a single <agent-name>.md file. Use this whenever the user asks to create an agent, code agent, subagent, reviewer, helper, assistant, bot, criar agente, novo agente, or describes a repeatable coding role, even if they don't say the word agent explicitly.
+license: MIT
+---
+
+# sub-agent-builder — Code Subagents from Purpose
+
+Turn a one-sentence purpose into a complete, reusable subagent definition.
+The user states the purpose; you propose everything else and write one file.
+
+## When not to use
+
+- The user asked a one-off coding question (just answer directly).
+- The user wants repo-level rules in `AGENTS.md`, not a reusable role
+  (use `agents-md`).
+- The user wants project documentation, not a reusable role (use `doc-ai`).
+- The user wants UI built, not a role defined (use `saas-ui`).
+
+## Workflow
+
+### Phase 1 — Discover (purpose first, repo second)
+
+1. Extract the purpose from the conversation. If vague, restate it in one
+   sentence and ask for confirmation. Never invent a purpose.
+2. Inspect the repo lightly: stack from manifests, existing agents
+   (`.opencode/agents/`, `.claude/agents`, `AGENTS.md`), how tests/lint run.
+   Record real paths. This grounds tool and routine choices.
+3. List what you could NOT determine as open questions — never guess.
+
+### Phase 2 — Ask once, then propose
+
+Ask one batch of questions, then write. Do not start Phase 3 on assumptions.
+
+Ask about (skip what the user already answered):
+
+1. **Name** — lowercase, hyphenated (e.g. `code-reviewer`, `debug-helper`).
+2. **Trigger** — one sentence: what it does + when it runs.
+3. **Powers** — read-only (explore/review) or can edit and run commands.
+4. **Scope** — languages, folders, or repos it applies to.
+5. **Output language** — default to the user's language.
+6. **Destination** — single `<name>.md` file; where it will be installed.
+
+Then propose additions from the Routines catalog below. Frame them as:
+"Since you didn't mention X, I suggest Y because Z. Keep it?"
+Only include what the user keeps. The user states purpose; you suggest the rest.
+
+### Phase 3 — Write (one file, nothing else)
+
+Write a single `<agent-name>.md` file with this exact shape:
+
+```markdown
+---
+description: <what it does + when to use, 1-2 sentences>
+mode: subagent
+permission:
+  edit: allow|ask|deny
+  bash: allow|ask|deny
+---
+
+# <Name>
+
+<Role: who this agent is, in 2-3 sentences. Why it exists.>
+
+## When to use
+
+- <trigger bullet>
+- <trigger bullet>
+
+## When NOT to use
+
+- <out-of-scope bullet>
+
+## Workflow
+
+1. <step with reason, not just command>
+2. <step>
+3. <verify before finishing>
+
+## Guardrails
+
+- <never commit, push, or open PR unless explicitly asked>
+- <never skip hooks, never force-push, never edit secrets/config unasked>
+- <evidence before synthesis: read the file before citing it>
+
+## Routines (only the ones the user kept)
+
+### Pre-commit
+
+- `git status`, `git diff` — review own changes first
+- Run repo checks (lint/build/test) and record exact commands + results
+- No secrets, no unrelated refactors bundled in
+
+### Commit message
+
+- Conventional style: `type(scope): short imperative summary`
+- One logical change per commit, no empty commits
+
+### Pre-push / done
+
+- Re-read the diff from the base branch, confirm scope
+- Final summary: files changed (with `path:line`), checks run + results,
+  what was left open
+
+## Output format
+
+<State exactly what the agent returns: files changed, how to verify,
+one known trade-off or next step. Keep prose tight.>
+```
+
+Rules for the file:
+
+- Frontmatter needs `description` (always in English, 1-2 sentences, so
+  trigger matching works) and `mode: subagent`. Always write `permission`
+  with both `edit` and `bash` explicit so the powers are obvious.
+  Mapping: read-only/review means `edit: deny`; keep `bash: allow` when the
+  agent must run read-only checks (`git diff`, lint, tests), otherwise `ask`
+  or `deny`. Keep temperature/model out unless the user asked for one.
+- Headings stay in English (`## When to use`, `## Guardrails`, ...); body
+  content follows the user's output language. Never translate headings.
+- `## Routines` holds one `### <name>` per kept routine only — drop the
+  rest, do not leave empty sections. Use the catalog names (`Repo grounding`,
+  `Smallest diff`, ...) or the commit trio (`Pre-commit`, `Commit message`,
+  `Pre-push / done`) as headings; fold trivially small routines into
+  Workflow instead of creating a one-line section.
+- If the repo has no manifests, test runner, or agent folder, say so
+  explicitly in the agent file ("detect via `package.json` in the target
+  repo") instead of guessing commands. Never invent a command as the default.
+- Body stays focused: role, triggers, workflow, guardrails, kept routines,
+  output format. Explain the why behind each rule in one clause so the
+  agent can generalize beyond examples.
+- No placeholders, no `TODO`. If something is unknown, say so explicitly.
+- One file per agent. Never bundle two agents in one response.
+
+### Install map (tell the user where the file goes)
+
+- OpenCode: `~/.config/opencode/agents/<name>.md` (global) or
+  `.opencode/agents/<name>.md` (project). Invoke with `@<name>`.
+- Claude Code: `~/.claude/agents/<name>.md` (same frontmatter shape).
+- Cursor / Codex / Copilot / Gemini: reuse the same markdown as a custom
+  agent or project instruction file; follow that tool's custom-agent path,
+  content stays identical.
+
+## Routines catalog (suggest, never impose)
+
+Offer these only when relevant to the purpose. Each suggestion needs a why:
+
+- **Read-before-claim**: inspect `git status`, `git diff`, `git log --oneline -10`
+  before acting. Why: prevents editing the wrong files.
+- **Repo grounding**: check manifests, `AGENTS.md`, CI config for stack and
+  commands. Why: routines must match how this repo actually runs.
+- **Pre-commit check**: lint + build + targeted tests pass. Why: catches
+  breakage before it spreads.
+- **Message rule**: conventional commit, imperative, scoped. Why: history
+  stays searchable.
+- **No-surprise pushes**: never `commit`, `push`, `--force`, or open PR
+  unless explicitly requested. Why: destructive actions need consent.
+- **Post-task evidence**: report exact commands run and their results.
+  Why: claims without evidence erode trust.
+- **Smallest diff**: fix the smallest scope that solves it; separate
+  refactors. Why: reviewable changes ship faster.
+
+## Phase 4 — Verify
+
+- Show the file path and full content (or diff if updating an existing agent).
+- State how to invoke it (`@<name>` in OpenCode / Claude) and one example prompt.
+- Record which routines were kept vs. dropped and why.
+- Keep the skill lean: SKILL.md stays under 500 lines; no bundled resources
+  until a repeated pattern across runs justifies one.
+</script>
+<script type="text/plain" id="fulltext-agents-md">
+---
+name: agents-md
+description: Write or update a repo-level AGENTS.md that tells any coding agent how to build, test, and ship in this project — setup commands, code style, guardrails, and commit/before/after routines. Use this whenever the user asks for AGENTS.md, repo instructions, agent onboarding, contributor guide for AI, or says bootstrapping, standardize workflow, commit rules, even if they don't say the file name explicitly.
+license: MIT
+---
+
+# agents-md — Repo Instructions for Coding Agents
+
+Write one `AGENTS.md` at the repo root (plus nested ones for monorepos)
+so any coding agent can build, test, and ship without guessing.
+This skill writes repo rules, not reusable subagents (that is `sub-agent-builder`).
+
+## When not to use
+
+- The user wants a reusable role across repos (use `sub-agent-builder`).
+- The user asked a one-off coding question (just answer directly).
+- The user wants project documentation for humans (use `doc-ai`).
+
+## Workflow
+
+### Phase 1 — Discover (read before you claim)
+
+1. Identify the stack from manifests (`package.json`, `pom.xml`, `go.mod`,
+   `requirements.txt`, `docker-compose.yml`, CI config): language, framework,
+   database, auth, how it runs.
+2. Map the structure: entry points, routers/controllers, services, data layer,
+   frontend routes, shared libs. Record real paths.
+3. Find how to verify: install, dev, build, test, lint commands from the repo
+   (README, CI, existing `AGENTS.md`/`CLAUDE.md` if present).
+4. Check for existing `AGENTS.md` files (root + nested). If one exists, update
+   it in place instead of rewriting from scratch.
+5. List what you could NOT determine as open questions — never guess a command.
+
+### Phase 2 — Ask once, then propose
+
+Ask one batch, then write. Do not start Phase 3 on assumptions.
+
+Ask about (skip what the user already answered):
+
+1. **Destination** — root `AGENTS.md`, nested `packages/<name>/AGENTS.md`,
+   or both. Default: root only.
+2. **Depth** — pick one: `minimal` (setup + verify + guardrails),
+   `standard` (plus code style + testing + commit routines),
+   `complete` (plus architecture map, security notes, PR instructions).
+3. **Language** — default to the user's language for body text; keep commands
+   and paths verbatim.
+4. **Routines** — confirm which commit/before/after routines to encode
+   (see catalog). Only include what the user keeps.
+
+Then propose additions from the Routines catalog. Frame them as:
+"Since you didn't mention X, I suggest Y because Z. Keep it?"
+
+### Phase 3 — Write (AGENTS.md, nothing else)
+
+Write `AGENTS.md` with this shape. Keep `minimal` to Setup + Verify +
+Guardrails; add sections as depth grows:
+
+```markdown
+# AGENTS.md
+
+## Project overview
+
+<1-3 sentences: what this repo is, stack, who it serves.>
+
+## Setup commands
+
+- Install deps: `<real command>`
+- Start dev: `<real command>`
+- Build: `<real command>`
+
+## Code style
+
+- <verified convention, e.g. TypeScript strict, single quotes>
+- <where shared primitives live: real paths>
+
+## Testing instructions
+
+- Run checks: `<real command, e.g. pnpm test>`
+- Focus one test: `<real command with pattern>`
+- Fix failures until green before finishing.
+
+## Guardrails
+
+- Never `commit`, `push`, `--force`, or open a PR unless explicitly asked.
+- Never skip hooks (`--no-verify`), never edit secrets/config unasked.
+- Evidence before synthesis: read the file before citing it.
+
+## Commit routines (only the ones the user kept)
+
+- Pre-commit: `git status`, `git diff`; run lint/build/targeted tests;
+  record exact commands + results. No secrets, no bundled refactors.
+- Message: `type(scope): short imperative summary`. One logical change
+  per commit, no empty commits.
+- Done: re-read the diff from the base branch; report files changed
+  (`path:line`), checks run + results, what was left open.
+
+## PR instructions (only if depth is complete or user kept it)
+
+- Title format: `<real convention or state none>`
+- Always run lint + tests before committing.
+```
+
+Rules for the file:
+
+- Every command must be one you found in the repo (manifest, README, CI).
+  If a command is unknown, write "detect in target repo" explicitly instead
+  of inventing one. Never invent build/test commands as defaults.
+- User claims are not verification: if the user says "we use pytest" but the
+  repo shows no evidence, write "unverified per user request: `<command>` —
+  confirm against manifest/CI" rather than stating it as fact or silently
+  dropping it.
+- Depth maps to sections: `minimal` = Project overview + Setup commands +
+  Testing instructions + Guardrails (no Commit/PR sections even if a kept
+  routine overlaps — fold it into Guardrails as one line). `standard` adds
+  Code style + Commit routines. `complete` adds architecture/security notes +
+  PR instructions.
+- Keep it scannable: short bullets, real paths with `path:line` where they
+  matter, no prose essays. Explain the why in one clause per rule so agents
+  generalize beyond examples.
+- No placeholders, no `TODO`. If something is unknown, say so explicitly.
+- One `AGENTS.md` per response unless the user confirmed nested files.
+  For monorepos, the closest `AGENTS.md` to the edited file wins — keep
+  shared rules at the root, package specifics nested.
+- Treat it as living documentation: updating beats rewriting.
+
+### Placement (tell the user where the file goes)
+
+- Standard: `<repo-root>/AGENTS.md` — works across OpenCode, Claude Code,
+  Cursor, Codex, Copilot, Gemini, and 60k+ repos using the open format.
+- Monorepo: add `<package-dir>/AGENTS.md` for package-specific rules.
+- Symlink only if the user asks (`AGENT.md`/`CLAUDE.md` compat).
+
+## Routines catalog (suggest, never impose)
+
+Offer only what fits the repo. Each suggestion needs a why:
+
+- **Setup first**: install + dev + build commands up top. Why: agents fail
+  without a working baseline.
+- **Verify loop**: lint + build + targeted tests before finishing. Why:
+  catches breakage before it spreads.
+- **Read-before-claim**: `git status`, `git diff`, `git log --oneline -10`
+  before editing. Why: prevents touching the wrong files.
+- **Message rule**: conventional commit, imperative, scoped. Why: history
+  stays searchable.
+- **No-surprise pushes**: never commit/push/PR unasked. Why: destructive
+  actions need consent.
+- **Post-task evidence**: report exact commands + results. Why: claims
+  without evidence erode trust.
+- **Smallest diff**: smallest scope that fixes it; separate refactors. Why:
+  reviewable changes ship faster.
+
+## Phase 4 — Verify
+
+- Show the file path and full content (or diff if updating).
+- Run the repo's own checks after writing (lint/build/tests) and record the
+  exact commands and results in your final summary. If the repo has no
+  checks (e.g. a markdown-only repo), that IS the result: report
+  `git status --short` plus "no lint/build/tests found" instead of
+  improvising verification.
+- State which routines were kept vs. dropped and why.
+- Keep the skill lean: SKILL.md stays under 500 lines; no bundled resources
+  until a repeated pattern across runs justifies one.
+</script>
 
 <script>
 (function () {
@@ -433,7 +975,7 @@
     }
   ];
 
-  var state = { skill: "saas-ui", platform: "claude" };
+  var state = { skill: "saas-ui", platform: "claude", mode: "cmd" };
 
   function fromHash() {
     var h = window.location.hash.replace(/^#/, "");
@@ -535,23 +1077,40 @@
     return { skill: SKILLS[state.skill], plat: plat, cmd: plat.install(state.skill) };
   }
 
+  var FULLTEXT = {};
+  function fullText(id) {
+    if (!FULLTEXT[id]) {
+      var el = document.getElementById("fulltext-" + id);
+      var raw = el ? el.textContent : "";
+      FULLTEXT[id] = raw.replace(/^\n/, "").replace(/\s+$/, "");
+    }
+    return FULLTEXT[id];
+  }
+
+  function slabContent() {
+    return state.mode === "text" ? fullText(state.skill) : current().cmd;
+  }
+
   function renderAll(fromLoad) {
     renderTabs();
     renderNav();
     var c = current();
     document.getElementById("skillName").textContent = c.skill.name;
     document.getElementById("skillDesc").textContent = c.skill.desc;
-    var ul = document.getElementById("skillUses");
-    ul.innerHTML = "";
-    c.skill.uses.forEach(function (u) {
-      var li = document.createElement("li");
-      li.textContent = u;
-      ul.appendChild(li);
-    });
-    document.getElementById("slabTitle").textContent = c.skill.name + " on " + c.plat.label;
+    document.getElementById("tabCmd").setAttribute("aria-selected", state.mode === "cmd" ? "true" : "false");
+    document.getElementById("tabText").setAttribute("aria-selected", state.mode === "text" ? "true" : "false");
     var block = document.getElementById("cmdBlock");
     block.innerHTML = "";
-    block.appendChild(highlight(c.cmd));
+    if (state.mode === "text") {
+      var txt = fullText(state.skill);
+      document.getElementById("slabTitle").textContent = c.skill.name + " — full SKILL.md";
+      document.getElementById("slabSub").textContent = "Paste into SKILL.md — " + txt.split("\n").length + " lines, copy it all at once";
+      block.appendChild(document.createTextNode(txt));
+    } else {
+      document.getElementById("slabTitle").textContent = c.skill.name + " on " + c.plat.label;
+      document.getElementById("slabSub").textContent = "Run from the repo root";
+      block.appendChild(highlight(c.cmd));
+    }
     document.getElementById("checkText").textContent = c.plat.check;
     document.getElementById("tipText").textContent = c.plat.tip;
     resetCopy();
@@ -567,7 +1126,7 @@
 
   function resetCopy() {
     copyBtn.setAttribute("data-done", "false");
-    copyLabel.textContent = "Copy command";
+    copyLabel.textContent = state.mode === "text" ? "Copy full text" : "Copy command";
     if (copyTimer) { window.clearTimeout(copyTimer); copyTimer = null; }
   }
 
@@ -578,7 +1137,7 @@
   }
 
   copyBtn.addEventListener("click", function () {
-    var cmd = current().cmd;
+    var cmd = slabContent();
     function done() { markCopied(); }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cmd).then(done, function () { fallback(); });
@@ -602,6 +1161,15 @@
   window.addEventListener("hashchange", function () {
     fromHash();
     renderAll(true);
+  });
+
+  document.getElementById("tabCmd").addEventListener("click", function () {
+    state.mode = "cmd";
+    renderAll(false);
+  });
+  document.getElementById("tabText").addEventListener("click", function () {
+    state.mode = "text";
+    renderAll(false);
   });
 
   fromHash();
