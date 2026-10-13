@@ -20,6 +20,9 @@
     --paper: #ffffff;
     --paper-ink: #000000;
     --sage: #8fae8b;
+    --stamp: #f471b5;
+    --stamp-ink: #f9a8d4;
+    --sky: #6cb8ff;
     --radius-panel: 14px;
     --radius-control: 10px;
     --font-display: "Zilla Slab", Georgia, serif;
@@ -51,7 +54,7 @@
   a { color: var(--paper); }
   :focus { outline: none; }
   :focus-visible {
-    outline: 2px solid var(--paper);
+    outline: 2px solid var(--stamp);
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -137,7 +140,7 @@
     border-color: var(--line);
   }
   .plat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex: none; }
-  .plat[aria-current="true"] .plat-dot { background: var(--paper); }
+  .plat[aria-current="true"] .plat-dot { background: var(--stamp); }
   .plat-name { font-size: 14.5px; font-weight: 500; display: block; }
   .plat-path { font-family: var(--font-code); font-size: 11.5px; color: var(--faint); display: block; }
 
@@ -272,6 +275,55 @@
   .seg-title { font-size: 14.5px; font-weight: 600; display: block; }
   .seg-sub { font-size: 12.5px; display: block; margin-top: 2px; opacity: .75; }
 
+  /* explain: ficha de arquivo — uma pasta, uma rotina (pt-BR) */
+  .explain { margin: 22px 0 0; }
+  .folder-tab { display: block; margin: 0 0 14px; }
+  .folder-tab span {
+    font-family: var(--font-code); font-size: 12.5px; font-weight: 500;
+    color: #000000; background: var(--stamp);
+    border: 1px solid var(--stamp);
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+  .folder-body {
+    border: 1px solid var(--line); border-radius: var(--radius-panel);
+    background: var(--panel);
+    padding: 26px;
+  }
+  .explain h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.9rem, 4vw, 2.7rem); line-height: 1.04; letter-spacing: 0;
+    margin: 0; max-width: 22ch; text-wrap: balance;
+  }
+  .explain-standfirst { color: var(--muted); margin: 12px 0 0; max-width: 62ch; font-size: 16px; }
+  .explain-standfirst code {
+    font-family: var(--font-code); font-size: .86em;
+    color: var(--sky); background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px;
+  }
+  .gains { margin: 24px 0 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .gains div { padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .gains dt { font-size: 15px; font-weight: 600; }
+  .gains dd { margin: 4px 0 0; color: var(--muted); font-size: 14.5px; max-width: 60ch; }
+  .gains dd strong { color: var(--ink); font-weight: 600; }
+  .ledger { list-style: none; margin: 22px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .ledger li { border-bottom: 1px solid var(--line); }
+  .ledger-btn {
+    font: inherit; cursor: pointer; text-align: left; width: 100%;
+    background: transparent; color: var(--muted);
+    border: 0; border-left: 3px solid transparent;
+    padding: 14px 12px 14px 14px;
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: baseline;
+  }
+  .ledger-btn:hover { background: var(--panel-2); color: var(--ink); }
+  .ledger-btn:hover, .ledger-btn:focus-visible { border-left-color: var(--stamp); }
+  .ledger-job { font-family: var(--font-display); font-size: 17px; font-weight: 500; color: var(--ink); }
+  .ledger-skill { font-family: var(--font-code); font-size: 12.5px; color: var(--stamp-ink); white-space: nowrap; }
+  .ledger-say { grid-column: 1 / -1; font-size: 13.5px; color: var(--muted); }
+  .ledger-say code { font-family: var(--font-code); font-size: .92em; color: var(--sky); }
+  .ledger-act { grid-column: 1 / -1; font-size: 13px; color: var(--faint); }
+  .ledger-btn:hover .ledger-act { color: var(--stamp-ink); }
+
   .foot {
     border-top: 1px solid var(--line);
     padding: 20px 0 44px;
@@ -289,7 +341,11 @@
     .plat-path { display: none; }
     .checks { grid-template-columns: 1fr; }
     .seg { grid-template-columns: 1fr; }
+    .folder-body { padding: 20px 18px; }
+    .ledger-btn { grid-template-columns: 1fr; }
+    .ledger-skill { justify-self: start; }
     .main { padding: 20px 18px; }
+    .explain { margin-top: 14px; }
     .video { padding: 20px 18px; }
     .term-screen { min-height: 0; font-size: 12.5px; padding: 14px; }
   }
@@ -308,6 +364,67 @@
     </a>
     <a class="topbar-link" href="https://github.com/Kaueroch/SKILL_IA">View repository</a>
   </header>
+
+  <section class="explain" aria-labelledby="explainTitle">
+    <div class="folder-tab" aria-hidden="true"><span>folder with SKILL.md</span></div>
+    <div class="folder-body">
+      <h2 id="explainTitle">A skill is a folder that teaches the AI to do a job.</h2>
+      <p class="explain-standfirst">Inside goes a <code>SKILL.md</code> with the written routine: when to act, what to ask, how to deliver. You copy the folder into your tool. You write one sentence and review the delivery.</p>
+
+      <div>
+          <dl class="gains">
+            <div>
+              <dt>You write less</dt>
+              <dd>You say <strong>“create a pricing page”</strong> and get the screen back. Stack, patterns, and format come with the folder, and you win back minutes on repeated tasks.</dd>
+            </div>
+            <div>
+              <dt>You know what you get</dt>
+              <dd>You get a plan before code and evidence at the end. You recognize the format across conversations.</dd>
+            </div>
+            <div>
+              <dt>You repeat the move</dt>
+              <dd>You design, document, delegate, and standardize with the same move across 6 tools.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <ul class="ledger" aria-label="Which skill opens which job">
+        <li>
+          <button class="ledger-btn" type="button" data-goto-skill="saas-ui">
+            <span class="ledger-job">You design a screen</span>
+            <span class="ledger-skill">saas-ui</span>
+            <span class="ledger-say">Ask <code>create a pricing page for a solo freelancer CRM</code> and receive production-ready React and Tailwind.</span>
+            <span class="ledger-act">See the install command</span>
+          </button>
+        </li>
+        <li>
+          <button class="ledger-btn" type="button" data-goto-skill="doc-ai">
+            <span class="ledger-job">You inherit a codebase</span>
+            <span class="ledger-skill">doc-ai</span>
+            <span class="ledger-say">Ask <code>document this repo into docs/overview.md</code> and receive flows backed by proof.</span>
+            <span class="ledger-act">See the install command</span>
+          </button>
+        </li>
+        <li>
+          <button class="ledger-btn" type="button" data-goto-skill="sub-agent-builder">
+            <span class="ledger-job">You repeat a task</span>
+            <span class="ledger-skill">sub-agent-builder</span>
+            <span class="ledger-say">Ask <code>create a code-reviewer subagent for this repo</code> and call it with @name.</span>
+            <span class="ledger-act">See the install command</span>
+          </button>
+        </li>
+        <li>
+          <button class="ledger-btn" type="button" data-goto-skill="agents-md">
+            <span class="ledger-job">You standardize a project</span>
+            <span class="ledger-skill">agents-md</span>
+            <span class="ledger-say">Ask <code>generate the standard AGENTS.md for this repo</code> and receive verified commands.</span>
+            <span class="ledger-act">See the install command</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </section>
 
   <nav class="skills" role="tablist" aria-label="Choose a skill" id="skillTabs"></nav>
 
@@ -1327,6 +1444,18 @@ Offer only what fits the repo. Each suggestion needs a why:
     });
   }
   renderTermNav();
+
+  document.querySelectorAll("[data-goto-skill]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      var id = el.getAttribute("data-goto-skill");
+      if (SKILLS[id]) {
+        state.skill = id;
+        toHash();
+        renderAll(false);
+        document.querySelector(".layout").scrollIntoView({ behavior: termReduced ? "auto" : "smooth", block: "start" });
+      }
+    });
+  });
 
   if (termReduced) {
     SCRIPT.forEach(termStaticLine);
